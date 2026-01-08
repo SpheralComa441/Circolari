@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Sommari Paghe HR1 - Zucchetti</title>
+  <title>Sommari Paghe HR1 - hrzucchetti</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 20px; }
     label { display: block; margin-top: 10px; }
@@ -13,46 +13,26 @@
   </style>
 </head>
 <body>
-  <h1>Ricerca Sommari Paghe HR1</h1>
+  <h1>Sommari Paghe HR1 - hrzucchetti.it</h1>
 
   <form onsubmit="generaLink(event)">
     <label>
-      Versione (es. 25.10.00):
-      <input type="text" id="versione" required placeholder="es. 25.10.00">
+      Versione (es. 25.11.00):
+      <input type="text" id="versione" required placeholder="es. 25.11.00">
     </label>
 
     <label>
-      UPD (es. 001) - opzionale:
+      UPD (es. 002) - opzionale:
       <input type="text" id="upd" placeholder="se vuoto → 000">
     </label>
 
-    <button type="submit">Genera link</button>
+    <button type="submit">Apri PDF</button>
   </form>
 
   <div id="result"></div>
 
   <script>
-    const BASE_CON_SOMMARI =
-      "https://www.zucchetti.it/areariservata/dms/Documentazione_aziendale/" +
-      "Pubblicazioni_su_MyZucchetti/Area_tecnica/Documentazione_tecnica/" +
-      "Materiale%20di%20supporto/Paghe%20Web/Sommari%20Paghe/";
-    const BASE_SENZA_SOMMARI =
-      "https://www.zucchetti.it/areariservata/dms/Documentazione_aziendale/" +
-      "Pubblicazioni_su_MyZucchetti/Area_tecnica/Documentazione_tecnica/" +
-      "Materiale%20di%20supporto/Paghe%20Web/";
-    const VERSIONE_SOGLIA = "24.09.01"; // da qui in poi c'è "Sommari Paghe"
-
-    function compareVersion(v1, v2) {
-      const a1 = v1.split(".").map(Number);
-      const a2 = v2.split(".").map(Number);
-      for (let i = 0; i < Math.max(a1.length, a2.length); i++) {
-        const n1 = a1[i] || 0;
-        const n2 = a2[i] || 0;
-        if (n1 > n2) return 1;
-        if (n1 < n2) return -1;
-      }
-      return 0;
-    }
+    const BASE_URL = "https://www.hrzucchetti.it/infoupdate/HR1/";
 
     function generaLink(e) {
       e.preventDefault();
@@ -61,30 +41,27 @@
       let upd = document.getElementById("upd").value.trim();
 
       if (!versione) {
-        alert("Inserisci una versione valida (es. 25.10.00).");
+        alert("Inserisci una versione valida (es. 25.11.00).");
         return;
       }
 
-      // normalizza UPD
+      // normalizza UPD a 3 cifre
       if (!upd) {
         upd = "000";
       } else {
         upd = upd.padStart(3, "0");
       }
 
-      const usaSommari = compareVersion(versione, VERSIONE_SOGLIA) >= 0;
-      const base = usaSommari ? BASE_CON_SOMMARI : BASE_SENZA_SOMMARI;
-
       const fileName = `HR1_${versione}_${upd}.pdf`;
-      const url = base + fileName;
+      const url = BASE_URL + fileName;
 
-      // mostra comunque il link a schermo
+      // mostra il link a schermo
       const resultDiv = document.getElementById("result");
       resultDiv.innerHTML =
         `<p>URL generato:</p><p><a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a></p>`;
 
       // apre direttamente in una nuova scheda
-      window.open(url, "_blank", "noopener"); // apre il PDF in nuova tab [web:2][web:5]
+      window.open(url, "_blank", "noopener");
     }
   </script>
 </body>
