@@ -17,10 +17,9 @@
         <div class="card shadow-lg border-0 rounded-4">
           <div class="card-body p-5">
             
-            <!-- Header con logo a DESTRA del titolo -->
+            <!-- Header con titolo e logo -->
             <div class="d-flex align-items-center justify-content-center mb-4">
               <h1 class="display-5 fw-bold text-primary mb-0 me-3">Sommari Paghe</h1>
-              
               <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBfTzG1B6WJXOAi7Tn4AOGAk9WiaRKcmb39A&s" 
                    alt="Zucchetti HR Logo" 
                    class="rounded-circle shadow-sm ms-3" 
@@ -28,6 +27,14 @@
             </div>
             
             <form onsubmit="generaLink(event)">
+              <div class="mb-4">
+                <label class="form-label fw-semibold">Applicativo</label>
+                <select id="applicativo" class="form-select form-select-lg" required>
+                  <option value="HR1" selected>Paghe Infinity</option>
+                  <option value="MD7">CU770WEB</option>
+                </select>
+              </div>
+
               <div class="mb-4">
                 <label class="form-label fw-semibold">Versione</label>
                 <input type="text" class="form-control form-control-lg" id="versione" 
@@ -41,7 +48,7 @@
               </div>
 
               <button type="submit" class="btn btn-primary btn-lg w-100 py-3">
-                <i class="bi bi-file-earmark-pdf me-2"></i>Apri PDF
+                Apri PDF
               </button>
             </form>
 
@@ -53,11 +60,12 @@
   </div>
 
   <script>
-    const BASE_URL = "https://www.hrzucchetti.it/infoupdate/HR1/";
+    const BASE_ROOT = "https://www.hrzucchetti.it/infoupdate/";
 
     function generaLink(e) {
       e.preventDefault();
 
+      const codice = document.getElementById("applicativo").value;
       const versione = document.getElementById("versione").value.trim();
       let upd = document.getElementById("upd").value.trim();
 
@@ -66,26 +74,26 @@
         return;
       }
 
-      // normalizza UPD a 3 cifre
       if (!upd) {
         upd = "000";
       } else {
         upd = upd.padStart(3, "0");
       }
 
-      const fileName = `HR1_${versione}_${upd}.pdf`;
-      const url = BASE_URL + fileName;
+      const baseUrl = BASE_ROOT + codice + "/";
+      const fileName = `${codice}_${versione}_${upd}.pdf`;
+      const url = baseUrl + fileName;
 
-      // mostra il link a schermo
+      // Mostra solo l'URL generato (senza alert di successo)
       const resultDiv = document.getElementById("result");
       resultDiv.innerHTML = `
-        <div class="alert alert-success">
-          <strong>PDF pronto!</strong><br>
+        <div class="alert alert-info">
+          <strong>URL generato:</strong><br>
           <a href="${url}" target="_blank" rel="noopener noreferrer" class="alert-link">${url}</a>
         </div>
       `;
 
-      // apre direttamente in una nuova scheda
+      // Apre direttamente in nuova scheda
       window.open(url, "_blank", "noopener");
     }
   </script>
