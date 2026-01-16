@@ -5,10 +5,54 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sommari Paghe</title>
   
-  <!-- Bootstrap 5.3 CDN -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <style>
+    .version-item {
+      cursor: pointer;
+      padding: 8px 12px;
+      border-radius: 6px;
+      transition: all 0.2s;
+      margin-bottom: 4px;
+      background-color: #ffffff;
+      border: 1px solid #dee2e6;
+    }
+    .version-item:hover {
+      background-color: #e7f1ff;
+      transform: translateX(4px);
+    }
+    .accordion-button:not(.collapsed) {
+      background-color: #0d6efd;
+      color: white;
+    }
+    .accordion-button:focus {
+      box-shadow: none;
+    }
+    .year-header {
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+    .version-badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 3px;
+      margin-left: 8px;
+      display: inline-block;
+      min-width: 45px;
+      text-align: center;
+    }
+    .badge-upd {
+      background-color: #28a745;
+      color: white;
+    }
+    .badge-master {
+      background-color: #6c757d;
+      color: white;
+    }
+  </style>
 </head>
 <body class="bg-light">
   <div class="container">
@@ -17,7 +61,6 @@
         <div class="card shadow-lg border-0 rounded-4">
           <div class="card-body p-5">
             
-            <!-- Header con titolo e logo -->
             <div class="d-flex align-items-center justify-content-center mb-4">
               <h1 class="display-5 fw-bold text-primary mb-0 me-3">Sommari Paghe</h1>
               <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBfTzG1B6WJXOAi7Tn4AOGAk9WiaRKcmb39A&s" 
@@ -47,9 +90,15 @@
                        placeholder="es. 002 (vuoto → 000)">
               </div>
 
-              <button type="submit" class="btn btn-primary btn-lg w-100 py-3">
-                Apri PDF
-              </button>
+              <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary btn-lg py-3">
+                  Apri PDF
+                </button>
+                <button type="button" class="btn btn-outline-secondary btn-lg py-3" 
+                        data-bs-toggle="modal" data-bs-target="#versioniModal">
+                  📋 Sfoglia Versioni
+                </button>
+              </div>
             </form>
 
             <div id="result" class="mt-4"></div>
@@ -59,8 +108,160 @@
     </div>
   </div>
 
+  <!-- Modal Elenco Versioni -->
+  <div class="modal fade" id="versioniModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fw-bold">📋 Elenco Versioni Disponibili</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Filtra per applicativo:</label>
+            <select id="filterApp" class="form-select" onchange="filtraVersioni()">
+              <option value="all">Tutti</option>
+              <option value="HR1">Paghe Infinity (HR1)</option>
+              <option value="MD7">CU770WEB (MD7)</option>
+            </select>
+          </div>
+          <div id="versioniList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
     const BASE_ROOT = "https://www.hrzucchetti.it/infoupdate/";
+
+    // Database versioni (aggiungi qui le tue versioni)
+    const VERSIONI_DB = {
+      "HR1": {
+        "2023": [
+          "22.13.01", "22.13.01_UPD001",
+          "23.00.00", "23.01.00", "23.01.00_UPD001",
+          "23.02.00", "23.02.00_UPD001", "23.02.00_UPD002",
+          "23.03.00", "23.03.00_UPD001", "23.03.00_UPD002", "23.03.00_UPD003",
+          "23.04.00", "23.04.00_UPD001", "23.04.00_UPD002",
+          "23.05.00", "23.05.00_UPD001", "23.05.00_UPD002",
+          "23.06.00", "23.06.00_UPD001", "23.06.00_UPD002",
+          "23.06.01", "23.06.01_UPD001", "23.06.01_UPD002",
+          "23.07.00", "23.07.00_UPD001", "23.07.00_UPD002", "23.07.00_UPD003",
+          "23.08.00", "23.08.00_UPD001",
+          "23.09.00", "23.09.00_UPD001", "23.09.00_UPD002",
+          "23.10.00", "23.10.00_UPD001", "23.10.00_UPD002", "23.10.00_UPD003",
+          "23.11.00", "23.11.00_UPD001", "23.11.00_UPD002"
+        ],
+        "2024": [
+          "23.11.00 UPD003",
+          "24.00.00",
+          "24.00.00 UPD001",
+          "24.00.00 UPD002",
+          "24.01.00",
+          "24.01.00 UPD 999",
+          "24.01.00 UPD001",
+          "24.01.00 UPD002",
+          "24.02.00",
+          "24.03.00",
+          "24.03.00 UPD 001",
+          "24.03.00 UPD 002",
+          "24.03.00 UPD 003",
+          "24.04.00",
+          "24.04.00UPD001",
+          "24.04.00UPD002",
+          "24.05.00",
+          "24.05.00 UPD 001",
+          "24.05.01",
+          "24.06.00",
+          "24.07.00",
+          "24.07.00 UPD 001",
+          "24.07.00 UPD 002",
+          "24.07.00 UPD 003",
+          "24.08.00",
+          "24.08.01",
+          "24.08.01 UPD 001",
+          "24.08.01 UPD 002",
+          "24.09.00",
+          "24.09.00 UPD001",
+          "24.09.01",
+          "24.09.01 UPD001",
+          "24.10.00",
+          "24.10.00 UPD001",
+          "24.10.01",
+          "24.10.01 UPD 001",
+          "24.11.00",
+          "24.11.00 UPD 001",
+          "24.11.00 UPD 002",
+          "24.11.00 UPD 004",
+          "24.12.00",
+          "24.12.00 UPD 001"
+        ],
+        "2025": [
+          "25.00.00",
+          "25.00.00 UPD 1",
+          "25.01.00",
+          "25.01.00 UPD 1",
+          "25.02.00",
+          "25.02.00 UPD 1",
+          "25.02.00 UPD 2",
+          "25.03.00",
+          "25.03.00 UPD 2",
+          "25.03.00 UPD 4",
+          "25.04.00",
+          "25.04.00 UPD 1",
+          "25.04.00 UPD 2",
+          "25.05.00",
+          "25.05.00 UPD 1",
+          "25.05.00 UPD 2",
+          "25.06.00",
+          "25.06.00 UPD 1",
+          "25.06.00 UPD 2",
+          "25.07.00",
+          "25.07.00 UPD 1",
+          "25.07.00 UPD 2",
+          "25.07.00 UPD 3",
+          "25.08.00",
+          "25.08.00 UPD 1",
+          "25.08.00 UPD 2",
+          "25.09.00",
+          "25.09.00 UPD 1",
+          "25.10.00",
+          "25.10.00 UPD 1",
+          "25.10.00 UPD 2",
+          "25.11.00",
+          "25.11.00 UPD 1",
+          "25.11.00 UPD 2"
+        ],
+        "2026": [
+          "26.00.00"
+        ]
+      },
+      "MD7": {
+        "2023": [
+          "23.00.00",
+          "23.00.01",
+          "23.01.00",
+          "23.01.01",
+          "23.02.00"
+        ],
+        "2024": [
+          "24.00.00",
+          "24.01.00",
+          "24.02.00",
+          "24.02.00_UPD001",
+          "24.03.00"
+        ],
+        "2025": [
+          "25.00.00",
+          "25.00.00_UPD001",
+          "25.00.00_UPD002",
+          "25.00.01",
+          "25.01.00",
+          "25.01.00_UPD001",
+          "25.02.00"
+        ]
+      }
+    };
 
     function generaLink(e) {
       e.preventDefault();
@@ -84,7 +285,6 @@
       const fileName = `${codice}_${versione}_${upd}.pdf`;
       const url = baseUrl + fileName;
 
-      // Mostra solo l'URL generato (senza alert di successo)
       const resultDiv = document.getElementById("result");
       resultDiv.innerHTML = `
         <div class="alert alert-info">
@@ -93,9 +293,118 @@
         </div>
       `;
 
-      // Apre direttamente in nuova scheda
       window.open(url, "_blank", "noopener");
     }
+
+    function apriPDFDiretto(versioneCompleta, app) {
+      // Chiudi il modal
+      const modal = bootstrap.Modal.getInstance(document.getElementById('versioniModal'));
+      modal.hide();
+
+      // Separa versione e UPD
+      let versione, upd;
+      if (versioneCompleta.includes("UPD")) {
+        if (versioneCompleta.includes("_UPD")) {
+          // Formato MD7: "24.02.00_UPD001"
+          const [versionPart, updPart] = versioneCompleta.split("_UPD");
+          versione = versionPart;
+          upd = updPart;
+        } else {
+          // Formato HR1: "24.01.00 UPD001" o "24.01.00 UPD 001"
+          const parts = versioneCompleta.split("UPD");
+          versione = parts[0].trim();
+          upd = parts[1].replace(/\s+/g, '');
+        }
+      } else {
+        versione = versioneCompleta;
+        upd = "000";
+      }
+
+      // Formatta l'UPD a 3 cifre
+      upd = upd.padStart(3, "0");
+
+      // Genera l'URL e apri il PDF
+      const baseUrl = BASE_ROOT + app + "/";
+      const fileName = `${app}_${versione}_${upd}.pdf`;
+      const url = baseUrl + fileName;
+
+      window.open(url, "_blank", "noopener");
+    }
+
+    function filtraVersioni() {
+      const filter = document.getElementById("filterApp").value;
+      const list = document.getElementById("versioniList");
+      let html = "";
+      let accordionCounter = 0;
+
+      for (const [app, anni] of Object.entries(VERSIONI_DB)) {
+        if (filter !== "all" && filter !== app) continue;
+
+        const appName = app === "HR1" ? "Paghe Infinity" : "CU770WEB";
+        html += `<h5 class="mt-4 mb-3 text-primary fw-bold">${appName} (${app})</h5>`;
+
+        // Crea accordion per gli anni
+        const accordionId = `accordion-${app}`;
+        html += `<div class="accordion" id="${accordionId}">`;
+
+        // Ordina gli anni in ordine decrescente (più recente prima)
+        const anniOrdinati = Object.keys(anni).sort((a, b) => b - a);
+
+        for (const anno of anniOrdinati) {
+          const versioni = anni[anno];
+          if (versioni.length === 0) continue;
+
+          const collapseId = `collapse-${app}-${anno}`;
+          const headingId = `heading-${app}-${anno}`;
+          
+          accordionCounter++;
+
+          html += `
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="${headingId}">
+                <button class="accordion-button collapsed year-header" 
+                        type="button" 
+                        data-bs-toggle="collapse" 
+                        data-bs-target="#${collapseId}">
+                  📅 ${anno} <span class="badge bg-secondary ms-2">${versioni.length} versioni</span>
+                </button>
+              </h2>
+              <div id="${collapseId}" 
+                   class="accordion-collapse collapse" 
+                   data-bs-parent="#${accordionId}">
+                <div class="accordion-body">
+          `;
+          
+          versioni.forEach(v => {
+            const isUPD = v.includes("UPD");
+            const badgeClass = isUPD ? "badge-upd" : "badge-master";
+            const badgeText = isUPD ? "UPD" : "MASTER";
+            
+            html += `
+              <div class="version-item" onclick="apriPDFDiretto('${v}', '${app}')">
+                <span class="text-dark">${v}</span>
+                <span class="version-badge ${badgeClass}">${badgeText}</span>
+              </div>
+            `;
+          });
+          
+          html += `
+                </div>
+              </div>
+            </div>
+          `;
+        }
+
+        html += `</div>`; // Chiudi accordion
+      }
+
+      list.innerHTML = html || '<p class="text-muted">Nessuna versione disponibile.</p>';
+    }
+
+    // Carica le versioni all'apertura del modal
+    document.getElementById('versioniModal').addEventListener('show.bs.modal', function () {
+      filtraVersioni();
+    });
   </script>
 </body>
 </html>
