@@ -94,15 +94,6 @@
       66% { transform: translate(-15px, 15px) scale(0.98); }
     }
 
-    .grid-overlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
-      background-size: 80px 80px;
-      pointer-events: none; z-index: 0;
-    }
-
     .container {
       position: relative; z-index: 1; max-width: 520px; margin: 0 auto;
       padding: 40px 20px; min-height: 100vh;
@@ -529,40 +520,31 @@
       position: absolute;
       pointer-events: auto;
       cursor: pointer;
-      opacity: 0.06;
-      transition: opacity 0.3s ease, transform 0.4s ease;
+      opacity: 0.07;
+      transition: opacity 0.3s ease;
     }
 
     .z-item:hover {
-      opacity: 0.4;
+      opacity: 0.5 !important;
     }
 
     .z-item:hover .z-svg {
-      animation: z-hover 0.6s ease-in-out;
+      animation: z-hover 0.6s ease-in-out !important;
     }
 
-    .z-item.near-cursor {
-      opacity: 0.2;
-      transform: scale(1.1);
+    .z-item.pulse-active {
+      opacity: 0.25;
     }
 
-    .z-item.near-cursor .z-svg {
-      animation: z-pulse 0.8s ease-in-out;
-    }
-
-    .z-item.auto-playing {
-      opacity: 0.3;
-    }
-
-    .z-item.auto-playing .z-svg {
-      animation: z-auto 1.5s ease-in-out;
+    .z-item.pulse-active .z-svg {
+      animation: z-pulse 1s ease-in-out;
     }
 
     .z-svg {
       width: 100%;
       height: 100%;
-      filter: drop-shadow(0 0 15px var(--accent-glow));
-      animation: z-glow 4s ease-in-out infinite;
+      filter: drop-shadow(0 0 15px var(--accent-glow-strong));
+      transition: filter 0.3s ease;
     }
 
     .z-gradient-start { stop-color: var(--accent-primary); }
@@ -570,49 +552,67 @@
 
     @keyframes z-hover {
       0% { transform: scale(1) rotate(0deg); }
-      25% { transform: scale(1.15) rotate(-8deg); }
-      50% { transform: scale(1.2) rotate(0deg) translateY(-5px); }
-      75% { transform: scale(1.15) rotate(8deg); }
+      25% { transform: scale(1.2) rotate(-10deg); }
+      50% { transform: scale(1.3) rotate(0deg) translateY(-10px); }
+      75% { transform: scale(1.2) rotate(10deg); }
       100% { transform: scale(1) rotate(0deg); }
     }
 
     @keyframes z-pulse {
-      0% { transform: scale(1); filter: drop-shadow(0 0 10px var(--accent-glow)); }
-      50% { transform: scale(1.08) rotate(3deg); filter: drop-shadow(0 0 25px var(--accent-glow-strong)); }
-      100% { transform: scale(1); filter: drop-shadow(0 0 10px var(--accent-glow)); }
+      0% { transform: scale(1); filter: drop-shadow(0 0 15px var(--accent-glow-strong)); }
+      50% { transform: scale(1.15) rotate(5deg); filter: drop-shadow(0 0 30px var(--accent-glow-strong)) drop-shadow(0 0 50px var(--accent-glow)); }
+      100% { transform: scale(1); filter: drop-shadow(0 0 15px var(--accent-glow-strong)); }
     }
 
-    @keyframes z-auto {
-      0% { transform: scale(1) rotate(0deg); opacity: 1; }
-      15% { transform: scale(1.1) rotate(-5deg); }
-      30% { transform: scale(1.15) rotate(0deg) translateY(-8px); opacity: 1; }
-      50% { transform: scale(1.2) rotate(5deg); filter: drop-shadow(0 0 30px var(--accent-glow-strong)); }
-      70% { transform: scale(1.15) rotate(0deg) translateY(-5px); }
-      85% { transform: scale(1.1) rotate(-3deg); }
-      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    /* Animazioni di movimento fluttuante */
+    @keyframes float1 {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      25% { transform: translate(30px, -20px) rotate(3deg); }
+      50% { transform: translate(10px, 20px) rotate(-2deg); }
+      75% { transform: translate(-20px, -10px) rotate(2deg); }
     }
 
-    @keyframes z-glow {
-      0%, 100% { filter: drop-shadow(0 0 10px var(--accent-glow)); }
-      50% { filter: drop-shadow(0 0 20px var(--accent-glow-strong)); }
+    @keyframes float2 {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      25% { transform: translate(-25px, 30px) rotate(-3deg); }
+      50% { transform: translate(20px, -15px) rotate(4deg); }
+      75% { transform: translate(-15px, 25px) rotate(-2deg); }
     }
 
-    .z-item:nth-child(1) { top: 5%; left: 3%; width: 70px; }
-    .z-item:nth-child(2) { top: 12%; right: 8%; width: 120px; }
-    .z-item:nth-child(3) { top: 45%; left: 5%; width: 90px; }
-    .z-item:nth-child(4) { top: 30%; left: 45%; width: 55px; }
-    .z-item:nth-child(5) { bottom: 25%; right: 10%; width: 100px; }
-    .z-item:nth-child(6) { bottom: 35%; left: 25%; width: 65px; }
-    .z-item:nth-child(7) { top: 65%; right: 30%; width: 80px; }
-    .z-item:nth-child(8) { bottom: 8%; left: 55%; width: 70px; }
-    .z-item:nth-child(9) { top: 20%; left: 20%; width: 50px; }
-    .z-item:nth-child(10) { bottom: 15%; right: 40%; width: 60px; }
+    @keyframes float3 {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      33% { transform: translate(40px, 15px) rotate(5deg); }
+      66% { transform: translate(-30px, -25px) rotate(-4deg); }
+    }
+
+    @keyframes float4 {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      20% { transform: translate(-20px, -30px) rotate(-3deg); }
+      40% { transform: translate(25px, 10px) rotate(2deg); }
+      60% { transform: translate(-10px, 35px) rotate(-2deg); }
+      80% { transform: translate(15px, -20px) rotate(3deg); }
+    }
+
+    @keyframes float5 {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      50% { transform: translate(-35px, 25px) rotate(-5deg); }
+    }
+
+    .z-item:nth-child(1) { top: 5%; left: 3%; width: 70px; animation: float1 15s ease-in-out infinite; }
+    .z-item:nth-child(2) { top: 12%; right: 8%; width: 120px; animation: float2 18s ease-in-out infinite; }
+    .z-item:nth-child(3) { top: 45%; left: 5%; width: 90px; animation: float3 20s ease-in-out infinite; }
+    .z-item:nth-child(4) { top: 30%; left: 45%; width: 55px; animation: float4 16s ease-in-out infinite; }
+    .z-item:nth-child(5) { bottom: 25%; right: 10%; width: 100px; animation: float5 22s ease-in-out infinite; }
+    .z-item:nth-child(6) { bottom: 35%; left: 25%; width: 65px; animation: float1 19s ease-in-out infinite reverse; }
+    .z-item:nth-child(7) { top: 65%; right: 30%; width: 80px; animation: float2 17s ease-in-out infinite reverse; }
+    .z-item:nth-child(8) { bottom: 8%; left: 55%; width: 70px; animation: float3 21s ease-in-out infinite reverse; }
+    .z-item:nth-child(9) { top: 20%; left: 20%; width: 50px; animation: float4 14s ease-in-out infinite; }
+    .z-item:nth-child(10) { bottom: 15%; right: 40%; width: 60px; animation: float5 23s ease-in-out infinite reverse; }
   </style>
 </head>
 <body>
   <div class="bg-pattern"></div>
   <div class="z-background" id="zBackground"></div>
-  <div class="grid-overlay"></div>
   <div id="toast-container" class="toast-container"></div>
 
   <div class="container">
@@ -1166,9 +1166,8 @@
     function initZBackground() {
       const Z_CONFIG = {
         numZ: 10,
-        autoPlayMin: 1500,
-        autoPlayMax: 4000,
-        proximityRadius: 150
+        pulseInterval: 2000,  // Ogni 2 secondi
+        proximityRadius: 120
       };
 
       const Z_SVG = `
@@ -1188,6 +1187,7 @@
       if (!container) return;
 
       const zElements = [];
+      let currentPulseIndex = 0;
 
       // Crea le Z
       for (let i = 0; i < Z_CONFIG.numZ; i++) {
@@ -1204,24 +1204,23 @@
         zElements.push(div);
       }
 
-      // Animazione automatica
-      function scheduleAutoAnimation() {
-        const delay = Z_CONFIG.autoPlayMin + Math.random() * (Z_CONFIG.autoPlayMax - Z_CONFIG.autoPlayMin);
+      // Pulse animation ogni 2 secondi (una Z alla volta, ciclico)
+      function startPulseAnimation() {
+        setInterval(() => {
+          // Rimuovi pulse da tutte
+          zElements.forEach(z => z.classList.remove('pulse-active'));
 
-        setTimeout(() => {
-          const available = zElements.filter(el => !el.classList.contains('auto-playing'));
+          // Attiva pulse sulla Z corrente
+          zElements[currentPulseIndex].classList.add('pulse-active');
 
-          if (available.length > 0) {
-            const randomZ = available[Math.floor(Math.random() * available.length)];
-            randomZ.classList.add('auto-playing');
+          // Rimuovi dopo l'animazione
+          setTimeout(() => {
+            zElements[currentPulseIndex].classList.remove('pulse-active');
+          }, 1000);
 
-            setTimeout(() => {
-              randomZ.classList.remove('auto-playing');
-            }, 1500);
-          }
-
-          scheduleAutoAnimation();
-        }, delay);
+          // Passa alla prossima Z
+          currentPulseIndex = (currentPulseIndex + 1) % zElements.length;
+        }, Z_CONFIG.pulseInterval);
       }
 
       // Effetto vicinanza mouse
@@ -1239,17 +1238,15 @@
           );
 
           if (distance < Z_CONFIG.proximityRadius) {
-            if (!z.classList.contains('near-cursor') && !z.classList.contains('auto-playing')) {
-              z.classList.add('near-cursor');
-            }
-          } else {
-            z.classList.remove('near-cursor');
+            z.style.opacity = '0.3';
+          } else if (!z.classList.contains('pulse-active')) {
+            z.style.opacity = '';
           }
         });
       }
 
       document.addEventListener('mousemove', handleMouseMove);
-      scheduleAutoAnimation();
+      startPulseAnimation();
     }
   </script>
 </body>
