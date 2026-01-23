@@ -512,10 +512,106 @@
       .toast-container { left: 16px; right: 16px; top: 16px; }
       .toast { max-width: 100%; }
     }
+
+    /* ===== Z ANIMATED BACKGROUND ===== */
+    .z-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .z-item {
+      position: absolute;
+      pointer-events: auto;
+      cursor: pointer;
+      opacity: 0.06;
+      transition: opacity 0.3s ease, transform 0.4s ease;
+    }
+
+    .z-item:hover {
+      opacity: 0.4;
+    }
+
+    .z-item:hover .z-svg {
+      animation: z-hover 0.6s ease-in-out;
+    }
+
+    .z-item.near-cursor {
+      opacity: 0.2;
+      transform: scale(1.1);
+    }
+
+    .z-item.near-cursor .z-svg {
+      animation: z-pulse 0.8s ease-in-out;
+    }
+
+    .z-item.auto-playing {
+      opacity: 0.3;
+    }
+
+    .z-item.auto-playing .z-svg {
+      animation: z-auto 1.5s ease-in-out;
+    }
+
+    .z-svg {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 0 15px var(--accent-glow));
+      animation: z-glow 4s ease-in-out infinite;
+    }
+
+    .z-gradient-start { stop-color: var(--accent-primary); }
+    .z-gradient-end { stop-color: var(--accent-tertiary); }
+
+    @keyframes z-hover {
+      0% { transform: scale(1) rotate(0deg); }
+      25% { transform: scale(1.15) rotate(-8deg); }
+      50% { transform: scale(1.2) rotate(0deg) translateY(-5px); }
+      75% { transform: scale(1.15) rotate(8deg); }
+      100% { transform: scale(1) rotate(0deg); }
+    }
+
+    @keyframes z-pulse {
+      0% { transform: scale(1); filter: drop-shadow(0 0 10px var(--accent-glow)); }
+      50% { transform: scale(1.08) rotate(3deg); filter: drop-shadow(0 0 25px var(--accent-glow-strong)); }
+      100% { transform: scale(1); filter: drop-shadow(0 0 10px var(--accent-glow)); }
+    }
+
+    @keyframes z-auto {
+      0% { transform: scale(1) rotate(0deg); opacity: 1; }
+      15% { transform: scale(1.1) rotate(-5deg); }
+      30% { transform: scale(1.15) rotate(0deg) translateY(-8px); opacity: 1; }
+      50% { transform: scale(1.2) rotate(5deg); filter: drop-shadow(0 0 30px var(--accent-glow-strong)); }
+      70% { transform: scale(1.15) rotate(0deg) translateY(-5px); }
+      85% { transform: scale(1.1) rotate(-3deg); }
+      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+
+    @keyframes z-glow {
+      0%, 100% { filter: drop-shadow(0 0 10px var(--accent-glow)); }
+      50% { filter: drop-shadow(0 0 20px var(--accent-glow-strong)); }
+    }
+
+    .z-item:nth-child(1) { top: 5%; left: 3%; width: 70px; }
+    .z-item:nth-child(2) { top: 12%; right: 8%; width: 120px; }
+    .z-item:nth-child(3) { top: 45%; left: 5%; width: 90px; }
+    .z-item:nth-child(4) { top: 30%; left: 45%; width: 55px; }
+    .z-item:nth-child(5) { bottom: 25%; right: 10%; width: 100px; }
+    .z-item:nth-child(6) { bottom: 35%; left: 25%; width: 65px; }
+    .z-item:nth-child(7) { top: 65%; right: 30%; width: 80px; }
+    .z-item:nth-child(8) { bottom: 8%; left: 55%; width: 70px; }
+    .z-item:nth-child(9) { top: 20%; left: 20%; width: 50px; }
+    .z-item:nth-child(10) { bottom: 15%; right: 40%; width: 60px; }
   </style>
 </head>
 <body>
   <div class="bg-pattern"></div>
+  <div class="z-background" id="zBackground"></div>
   <div class="grid-overlay"></div>
   <div id="toast-container" class="toast-container"></div>
 
@@ -1061,7 +1157,100 @@
           document.body.classList.add(app === 'MD7' ? 'theme-md7' : 'theme-hr1');
         });
       }
+
+      // ===== Z ANIMATED BACKGROUND =====
+      initZBackground();
     });
+
+    // Z Background Animation
+    function initZBackground() {
+      const Z_CONFIG = {
+        numZ: 10,
+        autoPlayMin: 1500,
+        autoPlayMax: 4000,
+        proximityRadius: 150
+      };
+
+      const Z_SVG = `
+        <svg class="z-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="zGradPH" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" class="z-gradient-start"/>
+              <stop offset="100%" class="z-gradient-end"/>
+            </linearGradient>
+          </defs>
+          <path d="M20 20 L80 20 L80 30 L35 70 L80 70 L80 80 L20 80 L20 70 L65 30 L20 30 Z"
+                fill="url(#zGradPH)"/>
+        </svg>
+      `;
+
+      const container = document.getElementById('zBackground');
+      if (!container) return;
+
+      const zElements = [];
+
+      // Crea le Z
+      for (let i = 0; i < Z_CONFIG.numZ; i++) {
+        const div = document.createElement('div');
+        div.className = 'z-item';
+        div.innerHTML = Z_SVG;
+
+        const svg = div.querySelector('svg');
+        const gradId = `zGrad${i}`;
+        svg.querySelector('linearGradient').id = gradId;
+        svg.querySelector('path').setAttribute('fill', `url(#${gradId})`);
+
+        container.appendChild(div);
+        zElements.push(div);
+      }
+
+      // Animazione automatica
+      function scheduleAutoAnimation() {
+        const delay = Z_CONFIG.autoPlayMin + Math.random() * (Z_CONFIG.autoPlayMax - Z_CONFIG.autoPlayMin);
+
+        setTimeout(() => {
+          const available = zElements.filter(el => !el.classList.contains('auto-playing'));
+
+          if (available.length > 0) {
+            const randomZ = available[Math.floor(Math.random() * available.length)];
+            randomZ.classList.add('auto-playing');
+
+            setTimeout(() => {
+              randomZ.classList.remove('auto-playing');
+            }, 1500);
+          }
+
+          scheduleAutoAnimation();
+        }, delay);
+      }
+
+      // Effetto vicinanza mouse
+      function handleMouseMove(e) {
+        const mouseX = e.clientX;
+        const mouseY = e.clientY;
+
+        zElements.forEach(z => {
+          const rect = z.getBoundingClientRect();
+          const zCenterX = rect.left + rect.width / 2;
+          const zCenterY = rect.top + rect.height / 2;
+
+          const distance = Math.sqrt(
+            Math.pow(mouseX - zCenterX, 2) + Math.pow(mouseY - zCenterY, 2)
+          );
+
+          if (distance < Z_CONFIG.proximityRadius) {
+            if (!z.classList.contains('near-cursor') && !z.classList.contains('auto-playing')) {
+              z.classList.add('near-cursor');
+            }
+          } else {
+            z.classList.remove('near-cursor');
+          }
+        });
+      }
+
+      document.addEventListener('mousemove', handleMouseMove);
+      scheduleAutoAnimation();
+    }
   </script>
 </body>
 </html>
