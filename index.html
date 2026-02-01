@@ -10,16 +10,17 @@
   <style>
     :root {
       /* Base dark theme */
-      --bg-primary: #09090b;
-      --bg-secondary: #0f0f12;
-      --bg-card: #18181b;
-      --bg-card-hover: #1f1f23;
-      --bg-elevated: #27272a;
-      --text-primary: #fafafa;
-      --text-secondary: #a1a1aa;
-      --text-muted: #71717a;
-      --border-color: #27272a;
-      --border-subtle: #1f1f23;
+      --bg-primary: #07080b;
+      --bg-secondary: #0b0d14;
+      --bg-card: #11131b;
+      --bg-card-hover: #161a25;
+      --bg-elevated: #1b2030;
+      --text-primary: #f8fafc;
+      --text-secondary: #b8bfcc;
+      --text-muted: #7d8798;
+      --border-color: #1f2433;
+      --border-subtle: #161a24;
+      --surface-highlight: rgba(255, 255, 255, 0.04);
       --success: #22c55e;
       --error: #ef4444;
       --warning: #f59e0b;
@@ -29,36 +30,36 @@
       --radius-xl: 24px;
 
       /* Default theme (HR1 - Cyan/Blue) */
-      --accent-primary: #06b6d4;
-      --accent-secondary: #0891b2;
-      --accent-tertiary: #0e7490;
-      --accent-gradient: linear-gradient(135deg, #06b6d4 0%, #0284c7 50%, #7c3aed 100%);
-      --accent-glow: rgba(6, 182, 212, 0.15);
-      --accent-glow-strong: rgba(6, 182, 212, 0.25);
-      --shadow-glow: 0 0 60px var(--accent-glow);
-      --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4);
+      --accent-primary: #22d3ee;
+      --accent-secondary: #0ea5e9;
+      --accent-tertiary: #2563eb;
+      --accent-gradient: linear-gradient(135deg, #22d3ee 0%, #0ea5e9 55%, #2563eb 100%);
+      --accent-glow: rgba(14, 165, 233, 0.18);
+      --accent-glow-strong: rgba(14, 165, 233, 0.32);
+      --shadow-glow: 0 0 70px var(--accent-glow);
+      --shadow-card: 0 24px 60px rgba(2, 6, 23, 0.55);
     }
 
     /* Tema HR1 - Paghe Infinity (Cyan/Blue) */
     body.theme-hr1 {
-      --accent-primary: #06b6d4;
-      --accent-secondary: #0891b2;
-      --accent-tertiary: #0e7490;
-      --accent-gradient: linear-gradient(135deg, #06b6d4 0%, #0284c7 50%, #7c3aed 100%);
-      --accent-glow: rgba(6, 182, 212, 0.15);
-      --accent-glow-strong: rgba(6, 182, 212, 0.25);
-      --shadow-glow: 0 0 60px var(--accent-glow);
+      --accent-primary: #22d3ee;
+      --accent-secondary: #0ea5e9;
+      --accent-tertiary: #2563eb;
+      --accent-gradient: linear-gradient(135deg, #22d3ee 0%, #0ea5e9 55%, #2563eb 100%);
+      --accent-glow: rgba(14, 165, 233, 0.18);
+      --accent-glow-strong: rgba(14, 165, 233, 0.32);
+      --shadow-glow: 0 0 70px var(--accent-glow);
     }
 
     /* Tema MD7 - CU770WEB (Emerald/Green) */
     body.theme-md7 {
-      --accent-primary: #10b981;
-      --accent-secondary: #059669;
-      --accent-tertiary: #047857;
-      --accent-gradient: linear-gradient(135deg, #10b981 0%, #059669 50%, #0d9488 100%);
-      --accent-glow: rgba(16, 185, 129, 0.15);
-      --accent-glow-strong: rgba(16, 185, 129, 0.25);
-      --shadow-glow: 0 0 60px var(--accent-glow);
+      --accent-primary: #34d399;
+      --accent-secondary: #22c55e;
+      --accent-tertiary: #16a34a;
+      --accent-gradient: linear-gradient(135deg, #34d399 0%, #22c55e 55%, #16a34a 100%);
+      --accent-glow: rgba(34, 197, 94, 0.18);
+      --accent-glow-strong: rgba(34, 197, 94, 0.32);
+      --shadow-glow: 0 0 70px var(--accent-glow);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -67,8 +68,10 @@
       font-family: 'Space Grotesk', sans-serif;
       background: var(--bg-primary);
       color: var(--text-primary);
+      color-scheme: dark;
       min-height: 100vh;
       overflow-x: hidden;
+      transition: background 0.6s ease, color 0.3s ease;
     }
 
     .bg-pattern {
@@ -81,11 +84,23 @@
       content: '';
       position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
       background:
-        radial-gradient(ellipse at 20% 80%, var(--accent-glow) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 20%, var(--accent-glow) 0%, transparent 50%),
-        radial-gradient(ellipse at 50% 50%, var(--accent-glow) 0%, transparent 40%);
+        radial-gradient(ellipse at 20% 80%, var(--accent-glow) 0%, transparent 55%),
+        radial-gradient(ellipse at 80% 20%, var(--accent-glow) 0%, transparent 55%),
+        radial-gradient(ellipse at 50% 50%, rgba(255, 255, 255, 0.02) 0%, transparent 45%),
+        linear-gradient(120deg, rgba(255, 255, 255, 0.03), transparent 60%);
       animation: bgFloat 25s ease-in-out infinite;
       transition: background 0.5s ease;
+    }
+
+    .bg-pattern::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.02) 0 1px, transparent 1px 90px),
+        repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.02) 0 1px, transparent 1px 90px);
+      opacity: 0.35;
+      mix-blend-mode: screen;
     }
 
     @keyframes bgFloat {
@@ -95,8 +110,8 @@
     }
 
     .container {
-      position: relative; z-index: 1; max-width: 520px; margin: 0 auto;
-      padding: 40px 20px; min-height: 100vh;
+      position: relative; z-index: 1; max-width: 600px; margin: 0 auto;
+      padding: 56px 24px; min-height: 100vh;
       display: flex; flex-direction: column; justify-content: center;
     }
 
@@ -108,12 +123,12 @@
     }
 
     .logo-icon {
-      width: 100px; height: 100px; border-radius: 50%;
+      width: 96px; height: 96px; border-radius: 24px;
       display: flex; align-items: center; justify-content: center;
       box-shadow: 0 0 40px var(--accent-glow-strong);
       animation: pulse 3s ease-in-out infinite;
       overflow: hidden; background: #fff; padding: 6px;
-      border: 3px solid var(--accent-primary);
+      border: 2px solid var(--accent-primary);
       transition: all 0.3s ease;
     }
 
@@ -134,17 +149,17 @@
     .subtitle { color: var(--text-secondary); font-size: 1rem; margin-top: 8px; }
 
     .main-card {
-      background: linear-gradient(145deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
-      border: 1px solid var(--border-color);
+      background: linear-gradient(160deg, rgba(17, 19, 27, 0.92) 0%, rgba(10, 12, 18, 0.98) 100%);
+      border: 1px solid var(--border-subtle);
       border-radius: var(--radius-xl); padding: 36px;
       box-shadow: var(--shadow-card), var(--shadow-glow);
-      backdrop-filter: blur(20px);
+      backdrop-filter: blur(24px) saturate(140%);
       transition: all 0.3s ease;
     }
 
     .main-card:hover {
       border-color: var(--accent-primary);
-      box-shadow: var(--shadow-card), 0 0 80px var(--accent-glow);
+      box-shadow: var(--shadow-card), 0 0 90px var(--accent-glow);
     }
 
     .form-group { margin-bottom: 24px; }
@@ -184,9 +199,31 @@
 
     .form-select {
       cursor: pointer; appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-      background-repeat: no-repeat; background-position: right 16px center; padding-right: 48px;
+      background-image: none;
+      padding-right: 54px;
     }
+
+    .select-wrap {
+      position: relative;
+      display: block;
+    }
+
+    .select-icon {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      width: 18px;
+      height: 18px;
+      transform: translateY(-50%);
+      color: var(--accent-primary);
+      pointer-events: none;
+      opacity: 0.9;
+      transition: color 0.3s ease, opacity 0.3s ease;
+    }
+
+    .select-icon svg { width: 100%; height: 100%; display: block; }
+
+    .select-wrap:hover .select-icon { opacity: 1; }
 
     .form-select option {
       background: var(--bg-card);
@@ -459,8 +496,9 @@
 
     .status-indicator {
       display: inline-flex; align-items: center; gap: 8px;
-      font-size: 0.75rem; padding: 6px 14px; border-radius: var(--radius-sm); margin-top: 12px;
-      font-weight: 500;
+      font-size: 0.75rem; padding: 8px 14px; border-radius: 999px; margin-top: 12px;
+      font-weight: 600; background: var(--bg-card); border: 1px solid var(--border-color);
+      box-shadow: inset 0 0 0 1px var(--surface-highlight);
     }
     .status-online {
       background: rgba(34, 197, 94, 0.1);
@@ -520,15 +558,18 @@
       position: absolute;
       pointer-events: auto;
       cursor: pointer;
-      opacity: 0.07;
+      opacity: 0.08;
       transition: opacity 0.3s ease;
+      will-change: transform, opacity;
     }
 
-    .z-item:hover {
+    .z-item:hover,
+    .z-item.mouse-active {
       opacity: 0.5 !important;
     }
 
-    .z-item:hover .z-svg {
+    .z-item:hover .z-svg,
+    .z-item.mouse-active .z-svg {
       animation: z-hover 0.6s ease-in-out !important;
     }
 
@@ -634,10 +675,17 @@
       <form id="mainForm" onsubmit="generaLink(event)">
         <div class="form-group">
           <label class="form-label">Applicativo</label>
-          <select id="applicativo" class="form-select" required>
-            <option value="HR1" selected>Paghe Infinity</option>
-            <option value="MD7">CU770WEB</option>
-          </select>
+          <div class="select-wrap">
+            <select id="applicativo" class="form-select" required>
+              <option value="HR1" selected>Paghe Infinity</option>
+              <option value="MD7">CU770WEB</option>
+            </select>
+            <span class="select-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6"></path>
+              </svg>
+            </span>
+          </div>
         </div>
 
         <div class="form-group">
@@ -725,6 +773,7 @@
     let proxyAvailable = false;
     let cachedVersions = { HR1: null, MD7: null };
     let scanInProgress = false;
+    let appSelect = null;
 
     // ==========================================
     // VERIFICA PROXY
@@ -847,6 +896,36 @@
       btnText.innerHTML = loading ? '<span class="spinner"></span> Verifica...' : 'Apri PDF';
     }
 
+    function applyAppTheme(app) {
+      const isMd7 = app === 'MD7';
+      document.body.classList.toggle('theme-md7', isMd7);
+      document.body.classList.toggle('theme-hr1', !isMd7);
+    }
+
+    function syncFilterTabs(app) {
+      document.querySelectorAll('.filter-tab').forEach(tab => {
+        tab.classList.toggle('active', tab.dataset.filter === app);
+      });
+    }
+
+    function setActiveApp(app, { updateSelect = true, updateTabs = true, loadList = false } = {}) {
+      if (!app) return;
+      currentFilter = app;
+      applyAppTheme(app);
+
+      if (updateSelect && appSelect && appSelect.value !== app) {
+        appSelect.value = app;
+      }
+
+      if (updateTabs) {
+        syncFilterTabs(app);
+      }
+
+      if (loadList && document.getElementById('modal').classList.contains('active')) {
+        loadVersioni();
+      }
+    }
+
     // ==========================================
     // FUNZIONE PRINCIPALE
     // ==========================================
@@ -905,7 +984,7 @@
     function openModal() {
       document.getElementById('modal').classList.add('active');
       document.body.style.overflow = 'hidden';
-      loadVersioni();
+      setActiveApp(appSelect ? appSelect.value : currentFilter, { updateSelect: false, updateTabs: true, loadList: true });
     }
 
     function closeModal() {
@@ -918,16 +997,7 @@
     }
 
     function setFilter(filter) {
-      currentFilter = filter;
-      document.querySelectorAll('.filter-tab').forEach(tab => {
-        tab.classList.toggle('active', tab.dataset.filter === filter);
-      });
-
-      // Cambia tema colore in base all'applicativo
-      document.body.classList.remove('theme-hr1', 'theme-md7');
-      document.body.classList.add(filter === 'MD7' ? 'theme-md7' : 'theme-hr1');
-
-      loadVersioni();
+      setActiveApp(filter, { updateSelect: true, updateTabs: true, loadList: true });
     }
 
     async function loadVersioni() {
@@ -989,7 +1059,7 @@
       }
       
       // Ricarica
-      const filterBtns = document.querySelectorAll('.filter-btn');
+      const filterBtns = document.querySelectorAll('.filter-tab');
       filterBtns.forEach(btn => {
         if (btn.classList.contains('active')) {
           btn.click();
@@ -1123,7 +1193,7 @@
 
     function selezionaVersione(versioneCompleta, app) {
       closeModal();
-      document.getElementById('applicativo').value = app;
+      setActiveApp(app, { updateSelect: true, updateTabs: true, loadList: false });
       
       let versione, upd = '';
       if (versioneCompleta.includes('_UPD')) {
@@ -1144,17 +1214,16 @@
 
     // Init
     document.addEventListener('DOMContentLoaded', () => {
-      // Applica tema iniziale
-      document.body.classList.add('theme-hr1');
+      appSelect = document.getElementById('applicativo');
+      setActiveApp(appSelect ? appSelect.value : 'HR1', { updateSelect: false, updateTabs: true, loadList: false });
       checkProxyStatus();
 
       // Cambia tema quando si seleziona un applicativo dal dropdown principale
-      const appSelect = document.getElementById('applicativo');
       if (appSelect) {
         appSelect.addEventListener('change', (e) => {
           const app = e.target.value;
-          document.body.classList.remove('theme-hr1', 'theme-md7');
-          document.body.classList.add(app === 'MD7' ? 'theme-md7' : 'theme-hr1');
+          const modalOpen = document.getElementById('modal').classList.contains('active');
+          setActiveApp(app, { updateSelect: false, updateTabs: true, loadList: modalOpen });
         });
       }
 
@@ -1223,26 +1292,42 @@
         }, Z_CONFIG.pulseInterval);
       }
 
-      // Effetto vicinanza mouse
-      function handleMouseMove(e) {
-        const mouseX = e.clientX;
-        const mouseY = e.clientY;
+      // Effetto vicinanza mouse (ottimizzato con rAF)
+      let mouseX = 0;
+      let mouseY = 0;
+      let rafId = null;
 
+      function updateZProximity(x, y) {
+        const now = performance.now();
         zElements.forEach(z => {
           const rect = z.getBoundingClientRect();
           const zCenterX = rect.left + rect.width / 2;
           const zCenterY = rect.top + rect.height / 2;
 
-          const distance = Math.sqrt(
-            Math.pow(mouseX - zCenterX, 2) + Math.pow(mouseY - zCenterY, 2)
-          );
-
+          const distance = Math.hypot(x - zCenterX, y - zCenterY);
           if (distance < Z_CONFIG.proximityRadius) {
-            z.style.opacity = '0.3';
+            z.style.opacity = '0.35';
+            const lastHover = Number(z.dataset.lastHover || 0);
+            if (now - lastHover > 450) {
+              z.dataset.lastHover = String(now);
+              z.classList.add('mouse-active');
+              setTimeout(() => z.classList.remove('mouse-active'), 650);
+            }
           } else if (!z.classList.contains('pulse-active')) {
             z.style.opacity = '';
           }
         });
+      }
+
+      function handleMouseMove(e) {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        if (!rafId) {
+          rafId = requestAnimationFrame(() => {
+            updateZProximity(mouseX, mouseY);
+            rafId = null;
+          });
+        }
       }
 
       document.addEventListener('mousemove', handleMouseMove);
@@ -1251,3 +1336,4 @@
   </script>
 </body>
 </html>
+
